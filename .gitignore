@@ -1,0 +1,4 @@
+/HelloWorldFunction/.gradle/
+/HelloWorldFunction/build/
+/.aws-sam/
+/.idea/
