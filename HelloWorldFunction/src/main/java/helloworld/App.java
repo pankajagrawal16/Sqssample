@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -18,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import software.amazon.lambda.powertools.logging.Logging;
 import software.amazon.lambda.powertools.metrics.Metrics;
 import software.amazon.lambda.powertools.sqs.SqsLargeMessage;
+import software.amazon.lambda.powertools.sqs.SqsUtils;
 import software.amazon.lambda.powertools.tracing.Tracing;
 
 import static software.amazon.lambda.powertools.tracing.CaptureMode.DISABLED;
@@ -35,6 +38,14 @@ public class App implements RequestHandler<SQSEvent, Object> {
     @SqsLargeMessage(deletePayloads = false)
     public APIGatewayProxyResponseEvent handleRequest(final SQSEvent input, final Context context) {
         Map<String, String> headers = new HashMap<>();
+
+        // Fluent API if use of annotation is not desired
+        SqsUtils.enrichedMessageFromS3(input, sqsMessages -> {
+            System.out.println("Enriched message");
+            return null;
+        });
+
+
         headers.put("Content-Type", "application/json");
         headers.put("X-Custom-Header", "application/json");
 
